@@ -1,0 +1,7 @@
+interface:
+  display_name: "SoftKit Architect"
+  short_description: "Design architecture for an approved work item."
+  default_prompt: "Execute the SoftKit Architect stage for the active approved SoftKit work item and return the required handoff."
+
+policy:
+  allow_implicit_invocation: false

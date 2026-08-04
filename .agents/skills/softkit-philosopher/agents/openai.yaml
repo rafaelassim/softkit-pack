@@ -1,0 +1,7 @@
+interface:
+  display_name: "SoftKit Policy"
+  short_description: "Define concrete engineering policies."
+  default_prompt: "Execute the SoftKit Policy stage for the active approved SoftKit work item and return the required handoff."
+
+policy:
+  allow_implicit_invocation: false

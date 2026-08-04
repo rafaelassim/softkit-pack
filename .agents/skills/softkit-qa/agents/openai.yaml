@@ -1,0 +1,7 @@
+interface:
+  display_name: "SoftKit QA"
+  short_description: "Create and execute traceable validation."
+  default_prompt: "Execute the SoftKit QA stage for the active approved SoftKit work item and return the required handoff."
+
+policy:
+  allow_implicit_invocation: false

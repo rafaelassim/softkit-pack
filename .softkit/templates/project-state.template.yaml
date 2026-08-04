@@ -1,0 +1,21 @@
+schema_version: 2
+generated_from: .softkit/templates/project-state.template.yaml
+
+softkit:
+  protocol: .softkit/softkit-protocol.md
+  templates: .softkit/templates
+  skills: .agents/skills
+
+project:
+  name: ""
+  status: active
+  primitives: softkit-input/project-primitives.md
+  approval_mode_default: cycle
+
+path_mappings: {}
+roadmap: []
+active_work_items: []
+work_items: []
+accepted_changes: []
+blockers: []
+last_reconciled: null

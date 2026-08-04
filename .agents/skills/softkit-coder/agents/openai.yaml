@@ -1,0 +1,7 @@
+interface:
+  display_name: "SoftKit Coder"
+  short_description: "Implement an approved SoftKit work item."
+  default_prompt: "Execute the SoftKit Coder stage for the active approved SoftKit work item and return the required handoff."
+
+policy:
+  allow_implicit_invocation: false

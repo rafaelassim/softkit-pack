@@ -1,0 +1,7 @@
+interface:
+  display_name: "SoftKit Orchestrator"
+  short_description: "Plan and coordinate a long-running SoftKit project."
+  default_prompt: "Initialize or continue this SoftKit project, reconcile its state, and propose the next workflow for my approval."
+
+policy:
+  allow_implicit_invocation: true

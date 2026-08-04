@@ -1,0 +1,30 @@
+schema_version: 2
+generated_from: .softkit/templates/work-item.template.yaml
+
+id: WI-XXX
+title: ""
+origin:
+  type: user-request  # change-request | roadmap | defect | user-request
+  id: ""
+status: proposed
+priority: medium
+
+objective: ""
+affected_submodules: []
+source_documents: []
+requirements: []
+architecture: []
+
+workflow:
+  status: proposed
+  approval_mode: cycle
+  approved_at: null
+  steps: []
+
+approval_boundaries: []
+stop_conditions: []
+current_skill: null
+current_gate: discovery-ready
+next_gate: requirements-ready
+blockers: []
+evidence: []

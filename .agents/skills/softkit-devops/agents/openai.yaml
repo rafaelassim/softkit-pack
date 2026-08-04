@@ -1,0 +1,7 @@
+interface:
+  display_name: "SoftKit DevOps"
+  short_description: "Prepare reproducible delivery and operations."
+  default_prompt: "Execute the SoftKit DevOps stage for the active approved SoftKit work item and return the required handoff."
+
+policy:
+  allow_implicit_invocation: false

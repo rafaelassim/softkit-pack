@@ -10,12 +10,26 @@ project:
   primitives: softkit-input/project-primitives.md
   approval_mode_default: cycle
 path_mappings: {}
-roadmap: []
+roadmap:
+- change: CR-001
+  status: applied
+  workflow: specs/00_Project_Control/workflows/WI-002.md
+  next_step: Nenhuma ação pendente no ciclo aprovado.
+- change: CR-002
+  status: applied
+  workflow: specs/00_Project_Control/workflows/WI-003.md
+  next_step: Nenhuma ação pendente no ciclo aprovado.
 active_work_items: []
 work_items:
 - id: WI-001
   status: verified
   path: specs/00_Project_Control/work-items/WI-001.yaml
+- id: WI-002
+  status: verified
+  path: specs/00_Project_Control/work-items/WI-002.yaml
+- id: WI-003
+  status: verified
+  path: specs/00_Project_Control/work-items/WI-003.yaml
 accepted_changes: []
 blockers: []
-last_reconciled: '2026-09-05T19:45:02.900538+00:00'
+last_reconciled: '2026-09-05T20:27:56.625882+00:00'

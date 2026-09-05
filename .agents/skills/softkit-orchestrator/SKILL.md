@@ -23,23 +23,23 @@ Treat the user's current prompt, including text following an explicit `$softkit-
 When command execution is available, prefer these repository-local scripts instead of recreating their behavior manually:
 
 ```text
-.agents/skills/softkit-orchestrator/scripts/bootstrap_softkit.py
-.agents/skills/softkit-orchestrator/scripts/create_work_item.py
-.agents/skills/softkit-orchestrator/scripts/scan_sources.py
-.agents/skills/softkit-orchestrator/scripts/validate_softkit.py
+.softkit/scripts/bootstrap_softkit.py
+.softkit/scripts/create_work_item.py
+.softkit/scripts/scan_sources.py
+.softkit/scripts/validate_softkit.py
 ```
 
 Typical commands from the repository root:
 
 ```bash
-python3 .agents/skills/softkit-orchestrator/scripts/validate_softkit.py
-python3 .agents/skills/softkit-orchestrator/scripts/bootstrap_softkit.py --project-name "Project Name"
-python3 .agents/skills/softkit-orchestrator/scripts/scan_sources.py
+python3 .softkit/scripts/validate_softkit.py
+python3 .softkit/scripts/bootstrap_softkit.py --project-name "Project Name"
+python3 .softkit/scripts/scan_sources.py
 ```
 
 For pack inspection, do not bootstrap a consumer project. The validator defaults to pack checks. Use `validate_softkit.py --mode project` for initialized state and work-item structure (requires PyYAML); it does not certify approval or behavioral correctness. Bootstrap creates missing scaffolding only; reconciliation and source authority classification remain coordinator responsibilities.
 
-Use `create_work_item.py` only after the proposed workflow has the required user approval. The script allocates the next stable ID and copies the canonical template; the orchestrator must still populate workflow details and update `project-state.yaml`.
+Use `create_work_item.py` in its default work-item mode only after the proposed workflow has the required user approval. Its `--artifact-type change-request` mode creates proposed inbox input from the change-request template and does not authorize implementation. Interactive mode selects the artifact type first; origin type remains work-item metadata. The script allocates the next stable ID and copies the canonical template; the orchestrator must still populate workflow details and update `project-state.yaml`.
 
 # Inputs
 

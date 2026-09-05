@@ -36,7 +36,7 @@ Template rules:
 - Preserve `schema_version` and `generated_from` in YAML-managed artifacts.
 - If the protocol or a required template is missing, stop and report an incomplete installation.
 
-When command execution is available, prefer the deterministic scripts in `.agents/skills/softkit-orchestrator/scripts/` for bootstrap, work-item allocation, source indexing, and structural validation.
+When command execution is available, prefer the deterministic scripts in `.softkit/scripts/` for bootstrap, work-item allocation, source indexing, and structural validation.
 
 ## 2. Canonical Project Paths
 

@@ -1,6 +1,21 @@
 schema_version: 1
-generated_at: "2026-09-05T16:45:02-03:00"
+generated_at: "2026-09-05T17:27:56-03:00"
 sources:
+  - path: "softkit-input/changes/applied/CR-001-script-location-and-interactive-work-item.md"
+    type: change-input
+    sha256: "5e2b6d24f5e1761d3553a4807c9db8475d55d8105e66f0070f7730ac2e5afa45"
+    size: 1505
+    modified_ns: 1788639267590218860
+  - path: "softkit-input/changes/applied/CR-002-artifact-routing-and-selection.md"
+    type: change-input
+    sha256: "b34d4fc046d0a7caa48d4a8228089153930a754ac3fae199115b5287343df023"
+    size: 1808
+    modified_ns: 1788640076619033454
+  - path: "softkit-input/changes/inbox/change-request.template.md"
+    type: change-input
+    sha256: "a9268dfcc60c23931ae3027142fe2d68b2ce83824837617c50fa8e1286565cb8"
+    size: 563
+    modified_ns: 1788639629418062678
   - path: "softkit-input/project-primitives.md"
     type: project-primitives
     sha256: "bbd9c185b1401b4969defbde3b11ee9107603daab457bc4a314c50943b9ee4ed"

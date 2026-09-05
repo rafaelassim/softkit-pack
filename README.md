@@ -24,7 +24,7 @@ AGENTS.md
     ├── softkit-orchestrator/
     │   ├── SKILL.md
     │   ├── agents/openai.yaml
-    │   └── scripts/
+    │   └── scripts/  # compatibility wrappers
     ├── softkit-interrogator/
     ├── softkit-philosopher/
     ├── softkit-architect/
@@ -34,6 +34,7 @@ AGENTS.md
     └── softkit-devops/
 .softkit/
 ├── softkit-protocol.md
+├── scripts/          # canonical helpers
 └── templates/
 ```
 
@@ -66,8 +67,8 @@ $softkit-orchestrator initialize this project
 When terminal execution is available, it may run:
 
 ```bash
-python3 .agents/skills/softkit-orchestrator/scripts/bootstrap_softkit.py --project-name "Project Name"
-python3 .agents/skills/softkit-orchestrator/scripts/scan_sources.py
+python3 .softkit/scripts/bootstrap_softkit.py --project-name "Project Name"
+python3 .softkit/scripts/scan_sources.py
 ```
 
 The generated `project-primitives.md` remains `draft` until you approve it.
@@ -105,7 +106,7 @@ In Codex CLI or the IDE extension, `/skills` lists the available skills.
 Pack validation does not require an initialized consumer project.
 
 ```bash
-python3 .agents/skills/softkit-orchestrator/scripts/validate_softkit.py
+python3 .softkit/scripts/validate_softkit.py
 ```
 
  🔴 Progress
@@ -123,9 +124,37 @@ For an initialized project, also validate the manifest, state and work-item
 structure (Python 3.11+ and PyYAML must be available):
 
 ```bash
-python3 .agents/skills/softkit-orchestrator/scripts/validate_softkit.py --mode project
+python3 .softkit/scripts/validate_softkit.py --mode project
 ```
 
 These checks do not certify user approval, semantic consistency or test success.
 The approved plan lives at the work item's `workflow.document`; execution state
 and evidence live in the work item. Same-executor QA/review is identified as such.
+
+
+Create a work item interactively from the repository root:
+
+```bash
+python3 .softkit/scripts/create_work_item.py
+```
+
+With no arguments, a terminal is required. Title and objective are mandatory;
+origin and priority offer defaults. Ctrl-C or EOF cancels without creating a file.
+For automation, pass `--title` and `--objective`; incomplete arguments fail without
+prompting. The old orchestrator script paths remain compatibility wrappers.
+
+
+The interactive creator first selects `work-item` or `change-request`. Known options
+use arrows and Enter on compatible POSIX terminals, or a numbered menu otherwise.
+Press q in the arrow menu, Ctrl-C, or EOF to cancel.
+
+To create a proposed change request directly:
+
+```bash
+python3 .softkit/scripts/create_work_item.py --artifact-type change-request --title "Change title" --objective "Requested behavior"
+```
+
+Change requests use the canonical Markdown template in `softkit-input/changes/inbox/`;
+work items use YAML in `specs/00_Project_Control/work-items/`. `--origin-type` remains
+work-item metadata. The default artifact type is `work-item` for existing automation.
+CR IDs consider all change lifecycle folders. Creating a request does not approve it.

@@ -5,7 +5,7 @@ description: "Perform independent review inside an approved SoftKit work item. I
 
 # Purpose
 
-Act as an independent senior reviewer. Find material defects and risks, support every finding with evidence, and avoid expanding the work item into a general redesign.
+Act as a senior reviewer. Find material defects and risks, support every finding with evidence, and avoid expanding the work item into a general redesign.
 
 # Current Request
 
@@ -14,6 +14,10 @@ Treat the user's current prompt, including text following an explicit `$softkit-
 # Required Protocol
 
 Read and follow `.softkit/softkit-protocol.md`, including the mandatory preflight and handoff contract.
+
+# Independence
+
+Apply protocol section 10: record the executor and whether they implemented the change. A skill switch in the same agent is not independent review or validation. If independence is a required gate and a separate permitted executor is unavailable, report blocked; otherwise disclose same-executor checks in the handoff.
 
 # Preconditions
 

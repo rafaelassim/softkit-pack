@@ -31,12 +31,14 @@ Template rules:
 - Before creating `specs/00_Project_Control/work-items/WI-XXX.yaml`, read `.softkit/templates/work-item.template.yaml`, copy its complete structure, allocate the next stable ID, and populate approved data.
 - If `softkit-input/project-primitives.md` is missing, read `.softkit/templates/project-primitives.template.md` and create or propose a draft. It remains `draft` until the user approves it.
 - When normalizing an inbox change, read `.softkit/templates/change-request.template.md`; preserve the original and create a structured derivative.
-- When `module.toml` is missing, read `.softkit/templates/module-schema.toml`, create the root manifest from repository evidence, and remove example-only entries that do not describe the project.
+- When `module.toml` is missing, read `.softkit/templates/module-schema.toml`, create the root manifest from repository evidence, and remove example-only entries that do not describe the project. An empty `modules = []` registry is valid while discovery is pending; the bootstrap helper must not invent module types or paths.
 - When a managed artifact exists, add missing structural keys conservatively; never replace confirmed values or silently migrate semantics.
 - Preserve `schema_version` and `generated_from` in YAML-managed artifacts.
 - If the protocol or a required template is missing, stop and report an incomplete installation.
 
-When command execution is available, prefer the deterministic scripts in `.agents/skills/softkit-orchestrator/scripts/` for bootstrap, work-item allocation, source indexing, and structural validation.
+Bootstrap installs the package from its script location into the exact destination (positional path or `--root`, default cwd). Validate source completeness and destination conflicts before copying; preserve existing project data and never copy the source project history. Installation conflicts require explicit reconciliation.
+
+When command execution is available, prefer the deterministic scripts in `.softkit/scripts/` for bootstrap, work-item allocation, source indexing, and structural validation.
 
 ## 2. Canonical Project Paths
 
@@ -80,7 +82,7 @@ Before specialized work:
 2. Recursively inspect relevant files under `softkit-input/premises/`.
 3. Read `specs/00_Project_Control/project-state.yaml`.
 4. Read the active work item under `specs/00_Project_Control/work-items/`.
-5. Read the approved workflow linked by the work item.
+5. Read the approved workflow at `workflow.document` in the work item. If an older work item lacks this field, link the existing approved plan without inventing approval; reconcile any disagreement before execution.
 6. Read every source document linked by the work item.
 7. Inspect existing target artifacts and implementation.
 8. Reconcile recorded state with actual files.
@@ -124,7 +126,9 @@ implemented | verified | blocked | superseded | rejected
 
 Every substantial action belongs to a work item recording objective, origin, affected submodules, sources, requirements, architecture, approved workflow, current gate, approval boundaries, stop conditions, evidence, and blockers.
 
-Do not expand scope silently. Create a proposed follow-up work item for unrelated discoveries.
+The external workflow document is the canonical approved plan. The work item stores execution status, gates and evidence; its `workflow.steps` summarizes the plan. Keep that summary consistent with the document.
+
+Do not expand scope silently. Record unrelated discoveries as follow-up proposals; allocate a new work item after the required workflow approval.
 
 ## 7. Workflow Proposal and Approval
 
@@ -140,6 +144,8 @@ Approval modes:
 - `supervised`: approval before each specialist stage;
 - `cycle`: one approval for the proposed cycle; default for long projects;
 - `autonomous-limited`: low-risk work continues within explicit boundaries.
+
+Explicit user approval for the same scope remains sufficient; do not ask again merely to reproduce it in a control artifact. Draft primitives are context, not approved constraints. Bounded maintenance explicitly authorized by the user can proceed while inferred project-wide primitives remain draft.
 
 An approved workflow remains valid across sessions until completed, superseded, blocked, or materially changed.
 
@@ -186,7 +192,11 @@ Never claim that a build, test, deployment, migration, or command succeeded unle
 **User Decision Required:** none | <decision>
 ```
 
-The orchestrator evaluates handoffs and updates the workflow. Specialist skills do not mark the whole work item complete.
+The orchestrator evaluates handoffs and updates execution state. Specialist skills do not mark the whole work item complete.
+
+QA and review must record the executor and relationship to implementation. A different skill stage in the same agent is self-validation or self-review, not independent evidence. When the approved workflow requires independence, use a separate permitted executor that did not implement the change; if unavailable, record the gate as blocked. Otherwise same-executor checks are allowed with that limitation disclosed. Do not spawn agents unless delegation is authorized.
+
+The Architect owns architectural decisions and ADRs. The Philosopher owns engineering policies and refers architectural decisions to the orchestrator for an Architect stage; it may supply policy constraints and alternatives but does not author the architectural decision.
 
 ## 11. Universal Guardrails
 

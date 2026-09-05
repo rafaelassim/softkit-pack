@@ -5,7 +5,7 @@ description: "Design and execute risk-based validation inside an approved SoftKi
 
 # Purpose
 
-Act as a senior QA and test automation engineer. Produce independent, traceable evidence that the active work item behaves as required and does not introduce material regressions.
+Act as a senior QA and test automation engineer. Produce traceable validation evidence that the active work item behaves as required and does not introduce material regressions.
 
 # Current Request
 
@@ -14,6 +14,10 @@ Treat the user's current prompt, including text following an explicit `$softkit-
 # Required Protocol
 
 Read and follow `.softkit/softkit-protocol.md`, including the mandatory preflight and handoff contract.
+
+# Independence
+
+Apply protocol section 10: record the executor and whether they implemented the change. A skill switch in the same agent is not independent review or validation. If independence is a required gate and a separate permitted executor is unavailable, report blocked; otherwise disclose same-executor checks in the handoff.
 
 # Preconditions
 

@@ -24,7 +24,7 @@ AGENTS.md
     ├── softkit-orchestrator/
     │   ├── SKILL.md
     │   ├── agents/openai.yaml
-    │   └── scripts/
+    │   └── scripts/  # compatibility wrappers
     ├── softkit-interrogator/
     ├── softkit-philosopher/
     ├── softkit-architect/
@@ -34,6 +34,7 @@ AGENTS.md
     └── softkit-devops/
 .softkit/
 ├── softkit-protocol.md
+├── scripts/          # canonical helpers
 └── templates/
 ```
 
@@ -41,11 +42,22 @@ Codex discovers repository skills under `.agents/skills`. Every skill is a direc
 
 ## Install in a new repository
 
-Copy the complete contents of this pack into the repository root, preserving hidden directories:
+Run the bootstrap from this pack, providing the exact destination directory:
 
 ```bash
-cp -a softkit-pack-codex/. /path/to/project/
+python3 .softkit/scripts/bootstrap_softkit.py /path/to/project --project-name "Project Name"
 ```
+
+The destination is created if missing. The script installs the eight skills,
+canonical tools, templates, protocol and AGENTS.md, then generates fresh project
+control files. It does not copy this pack's Git history, work items or premises.
+Existing project data is preserved. Identical installation files are reused;
+conflicting files (including custom AGENTS.md) are reported before any copying.
+Reconcile conflicts explicitly; this command is not a forced upgrade tool.
+
+`--root /path/to/project` remains supported instead of the positional destination.
+With neither option, the current directory is the exact destination. The source
+package is located relative to the script, so invocation from another cwd works.
 
 Create or edit the initial premises:
 
@@ -66,15 +78,17 @@ $softkit-orchestrator initialize this project
 When terminal execution is available, it may run:
 
 ```bash
-python3 .agents/skills/softkit-orchestrator/scripts/bootstrap_softkit.py --project-name "Project Name"
-python3 .agents/skills/softkit-orchestrator/scripts/scan_sources.py
+python3 .softkit/scripts/bootstrap_softkit.py --project-name "Project Name"
+python3 .softkit/scripts/scan_sources.py
 ```
 
 The generated `project-primitives.md` remains `draft` until you approve it.
 
 ## Toml
 
-For Integration we had a .toml of the project created.
+`module.toml` records discovered modules and integration contracts. Bootstrap creates
+an empty module registry; the orchestrator populates it from repository evidence.
+Unknown module types, source paths and interfaces must not be guessed.
 
 ## Continue a project
 
@@ -100,8 +114,10 @@ In Codex CLI or the IDE extension, `/skills` lists the available skills.
 
 ## Validate the pack
 
+Pack validation does not require an initialized consumer project.
+
 ```bash
-python3 .agents/skills/softkit-orchestrator/scripts/validate_softkit.py
+python3 .softkit/scripts/validate_softkit.py
 ```
 
  🔴 Progress
@@ -114,3 +130,42 @@ python3 .agents/skills/softkit-orchestrator/scripts/validate_softkit.py
 
 TODO:
 Test in different scenarios, loop for final validation.
+
+For an initialized project, also validate the manifest, state and work-item
+structure (Python 3.11+ and PyYAML must be available):
+
+```bash
+python3 .softkit/scripts/validate_softkit.py --mode project
+```
+
+These checks do not certify user approval, semantic consistency or test success.
+The approved plan lives at the work item's `workflow.document`; execution state
+and evidence live in the work item. Same-executor QA/review is identified as such.
+
+
+Create a work item interactively from the repository root:
+
+```bash
+python3 .softkit/scripts/create_work_item.py
+```
+
+With no arguments, a terminal is required. Title and objective are mandatory;
+origin and priority offer defaults. Ctrl-C or EOF cancels without creating a file.
+For automation, pass `--title` and `--objective`; incomplete arguments fail without
+prompting. The old orchestrator script paths remain compatibility wrappers.
+
+
+The interactive creator first selects `work-item` or `change-request`. Known options
+use arrows and Enter on compatible POSIX terminals, or a numbered menu otherwise.
+Press q in the arrow menu, Ctrl-C, or EOF to cancel.
+
+To create a proposed change request directly:
+
+```bash
+python3 .softkit/scripts/create_work_item.py --artifact-type change-request --title "Change title" --objective "Requested behavior"
+```
+
+Change requests use the canonical Markdown template in `softkit-input/changes/inbox/`;
+work items use YAML in `specs/00_Project_Control/work-items/`. `--origin-type` remains
+work-item metadata. The default artifact type is `work-item` for existing automation.
+CR IDs consider all change lifecycle folders. Creating a request does not approve it.

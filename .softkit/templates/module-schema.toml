@@ -5,6 +5,9 @@
 
 schema_version = 1
 
+# During discovery, use modules = [] here and omit the example [[modules]]
+# sections below. Add only modules and contracts supported by repository evidence.
+
 
 # ============================================================
 # MANIFEST

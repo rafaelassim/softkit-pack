@@ -28,7 +28,7 @@ Read and follow `.softkit/softkit-protocol.md`, including the mandatory prefligh
 4. When a decision is needed, present the concrete alternatives, consequences, and recommended default.
 5. Ask one targeted question at a time only if the trade-off cannot be resolved from project evidence.
 6. Record approved policies as verifiable rules, including scope and exceptions.
-7. Create an ADR instead of a policy when the decision is architectural and costly to reverse.
+7. When a decision is architectural and costly to reverse, return its constraints and alternatives to the orchestrator for an Architect stage. The Architect owns the ADR; do not decide the architecture in a policy stage.
 
 Typical policy areas:
 

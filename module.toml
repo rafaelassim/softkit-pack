@@ -1,0 +1,16 @@
+schema_version = 1
+
+[manifest]
+kind = "softkit-modules"
+
+[[modules]]
+id = "MOD001"
+name = "softkit_pack"
+kind = "plugin"
+path = "."
+description = "Repository-local skills, protocol, templates and Python workflow helpers."
+
+[modules.paths]
+source = ".agents/skills"
+tests = "tests"
+resources = ".softkit"

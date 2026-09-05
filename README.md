@@ -74,7 +74,9 @@ The generated `project-primitives.md` remains `draft` until you approve it.
 
 ## Toml
 
-For Integration we had a .toml of the project created.
+`module.toml` records discovered modules and integration contracts. Bootstrap creates
+an empty module registry; the orchestrator populates it from repository evidence.
+Unknown module types, source paths and interfaces must not be guessed.
 
 ## Continue a project
 
@@ -100,6 +102,8 @@ In Codex CLI or the IDE extension, `/skills` lists the available skills.
 
 ## Validate the pack
 
+Pack validation does not require an initialized consumer project.
+
 ```bash
 python3 .agents/skills/softkit-orchestrator/scripts/validate_softkit.py
 ```
@@ -114,3 +118,14 @@ python3 .agents/skills/softkit-orchestrator/scripts/validate_softkit.py
 
 TODO:
 Test in different scenarios, loop for final validation.
+
+For an initialized project, also validate the manifest, state and work-item
+structure (Python 3.11+ and PyYAML must be available):
+
+```bash
+python3 .agents/skills/softkit-orchestrator/scripts/validate_softkit.py --mode project
+```
+
+These checks do not certify user approval, semantic consistency or test success.
+The approved plan lives at the work item's `workflow.document`; execution state
+and evidence live in the work item. Same-executor QA/review is identified as such.

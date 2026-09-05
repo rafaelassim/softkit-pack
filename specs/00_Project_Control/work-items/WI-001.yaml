@@ -1,0 +1,39 @@
+schema_version: 2
+generated_from: .softkit/templates/work-item.template.yaml
+id: WI-001
+title: Correct SoftKit skill coordination inconsistencies
+origin:
+  type: user-request
+  id: ''
+status: verified
+priority: medium
+objective: Resolve the seven findings from the user-requested skill review.
+affected_submodules: []
+source_documents:
+- AGENTS.md
+- README.md
+- .softkit/softkit-protocol.md
+requirements: []
+architecture: []
+workflow:
+  status: approved
+  approval_mode: cycle
+  approved_at: '2026-09-05'
+  steps:
+  - 'softkit-coder: correct contracts and supporting helpers'
+  - 'softkit-qa: execute focused regression checks; same executor'
+  document: specs/00_Project_Control/workflows/WI-001.md
+approval_boundaries:
+- User explicitly requested corrections to the reviewed skills and their supporting
+  contracts.
+- No external actions, major dependencies, or unrelated changes.
+stop_conditions: []
+current_skill: null
+current_gate: complete
+next_gate: none
+blockers: []
+evidence:
+- report: specs/05_Validation/test-reports/softkit-pack/TR001-skill-consistency.md
+  result: passed
+  executor: /root
+  independent: false

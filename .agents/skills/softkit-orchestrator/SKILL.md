@@ -37,6 +37,8 @@ python3 .agents/skills/softkit-orchestrator/scripts/bootstrap_softkit.py --proje
 python3 .agents/skills/softkit-orchestrator/scripts/scan_sources.py
 ```
 
+For pack inspection, do not bootstrap a consumer project. The validator defaults to pack checks. Use `validate_softkit.py --mode project` for initialized state and work-item structure (requires PyYAML); it does not certify approval or behavioral correctness. Bootstrap creates missing scaffolding only; reconciliation and source authority classification remain coordinator responsibilities.
+
 Use `create_work_item.py` only after the proposed workflow has the required user approval. The script allocates the next stable ID and copies the canonical template; the orchestrator must still populate workflow details and update `project-state.yaml`.
 
 # Inputs
@@ -65,8 +67,7 @@ Use `create_work_item.py` only after the proposed workflow has the required user
    - specification paths;
    - module manifests;
    - declared integrations.
-4. Read `specs/00_Project_Control/SoftKit-progress.md`
-   after loading the project manifest.
+4. Read `specs/00_Project_Control/project-state.yaml` after loading the manifest, if state exists; otherwise follow bootstrap. This is the canonical progress record.
 5. If a registered module contains a `module.toml`, read it when
    that module becomes the active context.
 6. Do not infer module structure when it is explicitly declared
@@ -75,11 +76,11 @@ Use `create_work_item.py` only after the proposed workflow has the required user
 ## 2. Bootstrap and Reconciliation
 
 1. Resolve and read all five canonical templates before creating managed project files.
-2. If `module.toml` is missing, read `module-schema.toml` and create a populated root manifest from repository evidence before loading project state.
-3. If `softkit-input/project-primitives.md` is missing, read `project-primitives.template.md`, populate a draft from user input and repository evidence, and ask the user to approve it before planning implementation.
+2. If `module.toml` is missing, read `module-schema.toml` and create a root manifest from repository evidence before loading project state. The bootstrap helper creates an empty module registry; populate it after inspecting the repository. Unknown modules or contracts remain unregistered, not invented.
+3. If `softkit-input/project-primitives.md` is missing, read `project-primitives.template.md`, populate a draft from user input and repository evidence, and ask the user to approve it before using inferred primitives as implementation constraints. Existing explicit authorization for bounded maintenance remains valid; record inferred context as draft.
 4. If `specs/00_Project_Control/project-state.yaml` is missing, read `project-state.template.yaml`, copy its complete structure, populate known project fields, preserve `schema_version` and `generated_from`, and create the active file.
 5. If project state exists, compare it with `project-state.template.yaml`; add missing structural keys conservatively without replacing confirmed values.
-6. Recursively scan `premises/` and classify sources by type, authority, scope, and status.
+6. Recursively scan `softkit-input/premises/` and classify sources by type, authority, scope, and status.
 7. Read project state and inspect the actual repository.
 8. Create or update `source-index.yaml` using stable paths and content hashes when tools permit.
 9. Identify new, modified, moved, missing, deprecated, or conflicting sources.
@@ -87,7 +88,7 @@ Use `create_work_item.py` only after the proposed workflow has the required user
 
 ## 3. Change Intake
 
-1. Recursively scan `changes/inbox/`.
+1. Recursively scan `softkit-input/changes/inbox/`.
 2. Classify each new item as clarification, defect, functional enhancement, non-functional change, architectural change, operational change, or documentation-only change.
 3. Distinguish proposals from approved changes.
 4. Detect conflicts with project primitives and normative premises.
@@ -132,20 +133,21 @@ Use this proposal format:
 ## Recommended Approval Mode
 ```
 
-For substantial or long work, present the proposal and wait for user approval, adjustment, deferral, or rejection before execution. Default to `cycle` approval for long projects.
+For substantial or long work, present the proposal and obtain user approval, adjustment, deferral, or rejection before execution. Reuse explicit approval already given for the same scope; do not request it again. Default to `cycle` approval for long projects.
 
 For a small, low-risk task explicitly requested for immediate execution, present a concise workflow and proceed only when the user's request already constitutes clear approval and the action stays within established project boundaries.
 
 ## 6. Coordination
 
-1. Persist the approved workflow under `specs/00_Project_Control/workflows/`.
+1. Persist the approved plan under `specs/00_Project_Control/workflows/` and link it through `workflow.document` in the work item. The document owns scope, ordered stages, completion criteria and approval requirements; the work item owns execution status, gates and evidence. `workflow.steps` is a summary and must agree with the document. Reconcile disagreement before executing.
 2. Before creating a work item, read `work-item.template.yaml`; copy its complete structure to `specs/00_Project_Control/work-items/WI-XXX.yaml`, allocate the next stable ID, populate approved values, and preserve `schema_version` and `generated_from`.
 3. When updating an existing work item, validate its structure against `work-item.template.yaml` and add only missing structural keys without overwriting confirmed values.
 4. Add or update the work-item summary in `project-state.yaml`, which must remain consistent with `project-state.template.yaml`.
 5. Execute or route one approved stage at a time.
 6. Evaluate each specialist handoff against the stage completion criteria.
 7. Replan only when evidence, blockers, or scope changes require it.
-8. Ask again only when a mandatory stop condition is reached or the approved workflow materially changes.
+8. Record whether validation/review uses the implementation executor or a separate executor. Apply the independence rule in protocol section 10.
+9. Ask again only when a mandatory stop condition is reached or the approved workflow materially changes.
 
 ## 7. Completion
 

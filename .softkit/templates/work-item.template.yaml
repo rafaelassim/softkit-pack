@@ -16,6 +16,7 @@ requirements: []
 architecture: []
 
 workflow:
+  document: ""  # Repository-relative approved plan; required once approved.
   status: proposed
   approval_mode: cycle
   approved_at: null

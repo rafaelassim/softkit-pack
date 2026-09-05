@@ -29,7 +29,7 @@ Read and follow `.softkit/softkit-protocol.md`, including the mandatory prefligh
 4. Analyze concurrency, security, safety, compatibility, operability, and recovery when applicable.
 5. Use bounded contexts or DDD terminology only when domain complexity and independent models justify them.
 6. Compare viable alternatives for consequential decisions.
-7. Create an ADR only when a decision affects multiple modules, imposes long-term constraints, selects a major dependency or protocol, is costly to reverse, or materially affects security, reliability, data, or deployment.
+7. Own architectural decisions and ADRs, including referrals from the Philosopher. Use its policy constraints as inputs and return unresolved policy questions to the orchestrator. Create an ADR only when a decision affects multiple modules, imposes long-term constraints, selects a major dependency or protocol, is costly to reverse, or materially affects security, reliability, data, or deployment.
 8. Define explicit contracts using the protocol appropriate to the project; do not default to REST, gRPC, GraphQL, or events without evidence.
 9. Trace each new architectural element to a requirement, primitive, policy, or accepted change.
 10. Avoid speculative components and infrastructure.

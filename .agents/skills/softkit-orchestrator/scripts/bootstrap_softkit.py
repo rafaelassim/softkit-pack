@@ -5,7 +5,7 @@ import argparse
 from datetime import datetime, timezone
 from pathlib import Path
 import re
-import shutil
+import json
 
 REQUIRED_TEMPLATES = (
     "project-primitives.template.md",
@@ -26,8 +26,8 @@ def find_root(start: Path) -> Path:
 
 def replace_yaml_scalar(text: str, key: str, value: str, indent: int) -> str:
     pattern = rf"(?m)^{{indent}}{re.escape(key)}:\s*.*$".replace("{indent}", " " * indent)
-    replacement = " " * indent + f'{key}: "{value.replace(chr(34), chr(92)+chr(34))}"'
-    return re.sub(pattern, replacement, text, count=1)
+    replacement = " " * indent + key + ": " + json.dumps(value, ensure_ascii=False)
+    return re.sub(pattern, lambda _: replacement, text, count=1)
 
 
 def main() -> None:
@@ -48,59 +48,9 @@ def main() -> None:
 
     manifest = root / "module.toml"
     if not manifest.exists():
-        module_name = re.sub(r"[^a-z0-9]+", "_", project_name.lower()).strip("_")
-        text = f'''schema_version = 1
-
-[manifest]
-kind = "softkit-modules"
-
-[defaults]
-language = ""
-runtime = ""
-tests_root = "tests"
-
-[[modules]]
-id = "MOD001"
-name = "{module_name}"
-description = "Root project module."
-kind = "library"
-path = "."
-package = ""
-entry_point = ""
-lifecycle = "active"
-
-[modules.responsibility]
-summary = "Root project module."
-provides = []
-excludes = []
-
-[modules.paths]
-source = "src"
-tests = "tests"
-examples = "examples"
-resources = ""
-generated = ""
-
-[modules.specifications]
-requirements = "specs/02_Requirements"
-architecture = "specs/03_Architecture"
-implementation = "specs/04_Implementation"
-validation = "specs/05_Validation"
-operations = "specs/06_Operations"
-
-[modules.runtime]
-language = ""
-version = ""
-framework = ""
-package_manifest = ""
-
-[modules.ownership]
-architecture = "softkit-architect"
-implementation = "softkit-coder"
-validation = "softkit-qa"
-review = "softkit-reviewer"
-operations = "softkit-devops"
-'''
+        # Read the canonical schema, but never promote its examples to facts.
+        (templates / "module-schema.toml").read_text()
+        text = 'schema_version = 1\nmodules = []\n\n[manifest]\nkind = "softkit-modules"\n\n# Module discovery pending: register only evidence-backed modules and contracts.\n'
         manifest.write_text(text)
         print(f"created: {manifest.relative_to(root)}")
 
@@ -128,7 +78,7 @@ operations = "softkit-devops"
     primitives = root / "softkit-input" / "project-primitives.md"
     if not primitives.exists():
         text = (templates / "project-primitives.template.md").read_text()
-        text = text.replace("project: <project-name>", f'project: "{project_name}"')
+        text = text.replace("project: <project-name>", "project: " + json.dumps(project_name, ensure_ascii=False))
         text = text.replace("updated: YYYY-MM-DD", f"updated: {today}")
         # A generated primitives file is a draft until the user approves it.
         text = text.replace("status: approved", "status: draft", 1)

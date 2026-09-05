@@ -72,6 +72,10 @@ python3 .agents/skills/softkit-orchestrator/scripts/scan_sources.py
 
 The generated `project-primitives.md` remains `draft` until you approve it.
 
+## Toml
+
+For Integration we had a .toml of the project created.
+
 ## Continue a project
 
 From the repository root, start Codex and invoke:
@@ -102,11 +106,11 @@ python3 .agents/skills/softkit-orchestrator/scripts/validate_softkit.py
 
  🔴 Progress
 
- [█░░░░░░░░░] 10%
+ [██░░░░░░░░] 20%
 
  🔴 Testing
  
- [██░░░░░░░░] 25%
+ [██░░░░░░░░] 30%
 
 TODO:
 Test in different scenarios, loop for final validation.

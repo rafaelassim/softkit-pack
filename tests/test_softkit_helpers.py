@@ -193,6 +193,69 @@ class SoftKitHelpersTest(unittest.TestCase):
         with patch('sys.stdout.isatty', return_value=False), patch('builtins.input', side_effect=['invalid', '9', '2']):
             self.assertEqual(module['select']('Type', ('work-item', 'change-request'), 'work-item'), 'change-request')
 
+    def install(self, destination, expected=0, *extra):
+        result = subprocess.run([sys.executable, str(self.root / SCRIPTS / 'bootstrap_softkit.py'),
+                                 str(destination), *extra], cwd=self.temp.name,
+                                capture_output=True, text=True, timeout=10)
+        self.assertEqual(result.returncode, expected, result.stdout + result.stderr)
+        return result
+
+    def test_install_new_nested_destination_and_reexecute(self):
+        self.bootstrap('Source project')
+        history = self.root / 'specs/00_Project_Control/work-items/WI-900.yaml'
+        history.write_text('source history')
+        destination = self.root / 'new project'
+        self.install(destination)
+        self.assertFalse((destination / 'specs/00_Project_Control/work-items/WI-900.yaml').exists())
+        state = destination / 'specs/00_Project_Control/project-state.yaml'
+        data = yaml.safe_load(state.read_text())
+        self.assertEqual(data['project']['name'], 'new project')
+        self.assertEqual(data['work_items'], [])
+        self.assertEqual(tomllib.loads((destination / 'module.toml').read_text())['modules'], [])
+        self.assertIn('status: draft', (destination / 'softkit-input/project-primitives.md').read_text())
+        before = {p.relative_to(destination): p.read_bytes() for p in destination.rglob('*') if p.is_file()}
+        self.install(destination)
+        self.assertEqual(before, {p.relative_to(destination): p.read_bytes() for p in destination.rglob('*') if p.is_file()})
+        for mode in ('pack', 'project'):
+            result = subprocess.run([sys.executable, str(destination / SCRIPTS / 'validate_softkit.py'), '--mode', mode],
+                                    cwd=destination, capture_output=True, text=True)
+            self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
+        result = subprocess.run([sys.executable, str(destination / '.agents/skills/softkit-orchestrator/scripts/create_work_item.py'),
+                                 '--title', 'Installed', '--objective', 'Works'], cwd=destination, capture_output=True, text=True)
+        self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
+
+    def test_install_conflict_is_detected_before_copy(self):
+        destination = self.root / 'conflict'
+        destination.mkdir()
+        (destination / 'AGENTS.md').write_text('Custom instructions')
+        self.install(destination, 1)
+        self.assertEqual(list(destination.iterdir()), [destination / 'AGENTS.md'])
+        self.assertEqual((destination / 'AGENTS.md').read_text(), 'Custom instructions')
+
+    def test_install_preserves_existing_project_data(self):
+        destination = self.root / 'existing'
+        destination.mkdir()
+        (destination / 'module.toml').write_text('custom manifest')
+        (destination / 'app.py').write_text('custom code')
+        self.install(destination)
+        self.assertEqual((destination / 'module.toml').read_text(), 'custom manifest')
+        self.assertEqual((destination / 'app.py').read_text(), 'custom code')
+
+    def test_install_incomplete_source_writes_nothing(self):
+        (self.root / '.agents/skills/softkit-qa/SKILL.md').unlink()
+        destination = self.root / 'not-created'
+        self.install(destination, 1)
+        self.assertFalse(destination.exists())
+
+    def test_install_rejects_ambiguous_arguments_and_blocked_directory(self):
+        destination = self.root / 'ambiguous'
+        self.install(destination, 2, '--root', str(self.root))
+        self.assertFalse(destination.exists())
+        destination.mkdir()
+        (destination / 'specs').write_text('Not a directory')
+        self.install(destination, 1)
+        self.assertFalse((destination / '.agents').exists())
+
 
 if __name__ == '__main__':
     unittest.main()

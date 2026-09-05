@@ -37,7 +37,7 @@ python3 .softkit/scripts/bootstrap_softkit.py --project-name "Project Name"
 python3 .softkit/scripts/scan_sources.py
 ```
 
-For pack inspection, do not bootstrap a consumer project. The validator defaults to pack checks. Use `validate_softkit.py --mode project` for initialized state and work-item structure (requires PyYAML); it does not certify approval or behavioral correctness. Bootstrap creates missing scaffolding only; reconciliation and source authority classification remain coordinator responsibilities.
+For pack inspection, do not bootstrap a consumer project. The validator defaults to pack checks. Use `validate_softkit.py --mode project` for initialized state and work-item structure (requires PyYAML); it does not certify approval or behavioral correctness. Bootstrap installs the eight skills and canonical support files from the script’s package into an exact destination (positional directory or --root; default cwd), then creates missing scaffolding. It creates absent directories, preserves existing project data and reports installation conflicts before copying. It never copies source project history. Reconciliation and source authority classification remain coordinator responsibilities.
 
 Use `create_work_item.py` in its default work-item mode only after the proposed workflow has the required user approval. Its `--artifact-type change-request` mode creates proposed inbox input from the change-request template and does not authorize implementation. Interactive mode selects the artifact type first; origin type remains work-item metadata. The script allocates the next stable ID and copies the canonical template; the orchestrator must still populate workflow details and update `project-state.yaml`.
 

@@ -6,6 +6,7 @@ from datetime import datetime, timezone
 from pathlib import Path
 import re
 import json
+import shutil
 
 REQUIRED_TEMPLATES = (
     "project-primitives.template.md",
@@ -16,12 +17,55 @@ REQUIRED_TEMPLATES = (
 )
 
 
-def find_root(start: Path) -> Path:
-    start = start.resolve()
-    for candidate in (start, *start.parents):
-        if (candidate / ".softkit" / "softkit-protocol.md").is_file():
-            return candidate
-    raise SystemExit("SoftKit root not found: .softkit/softkit-protocol.md is missing")
+SKILLS = ("orchestrator", "interrogator", "philosopher", "architect", "coder", "qa", "reviewer", "devops")
+SCRIPTS = ("bootstrap_softkit.py", "create_work_item.py", "scan_sources.py", "validate_softkit.py")
+
+
+def install_package(source: Path, target: Path) -> None:
+    required = [Path("AGENTS.md"), Path(".softkit/softkit-protocol.md")]
+    required += [Path(".softkit/templates") / name for name in REQUIRED_TEMPLATES]
+    required += [Path(".softkit/scripts") / name for name in SCRIPTS]
+    for name in SKILLS:
+        base = Path(".agents/skills") / ("softkit-" + name)
+        required += [base / "SKILL.md", base / "agents/openai.yaml"]
+    required += [Path(".agents/skills/softkit-orchestrator/scripts") / name for name in SCRIPTS]
+    missing = [str(rel) for rel in required if not (source / rel).is_file()]
+    if missing:
+        raise SystemExit("Incomplete source installation: " + ", ".join(missing))
+    files = set(required)
+    for directory in [Path(".softkit/templates"), Path(".softkit/scripts")] + [
+        Path(".agents/skills") / ("softkit-" + name) for name in SKILLS
+    ]:
+        files.update(p.relative_to(source) for p in (source / directory).rglob("*")
+                     if p.is_file() and "__pycache__" not in p.parts and p.suffix != ".pyc")
+    conflicts = []
+    # Inspect every output path before creating directories or copying files.
+    managed = [Path("module.toml"), Path("softkit-input/project-primitives.md"),
+               Path("specs/00_Project_Control/project-state.yaml")]
+    directories = [Path("softkit-input/premises") / x for x in ("pseudocode", "examples", "references")]
+    directories += [Path("softkit-input/changes") / x for x in ("inbox", "accepted", "applied", "rejected", "archived")]
+    directories += [Path("specs/00_Project_Control") / x for x in ("work-items", "workflows", "change-impact")]
+    directories += [Path("specs") / x for x in ("01_Project_Policy", "02_Requirements", "03_Architecture", "04_Implementation", "05_Validation", "06_Operations")]
+    for rel in sorted(files | set(managed) | set(directories)):
+        dest = target / rel
+        for parent in (dest.parent, *dest.parents):
+            if parent.is_symlink() or (parent.exists() and not parent.is_dir()):
+                conflicts.append(str(parent))
+        if dest.is_symlink():
+            conflicts.append(str(dest))
+        elif dest.exists():
+            if rel in directories:
+                if not dest.is_dir():
+                    conflicts.append(str(dest))
+            elif not dest.is_file() or (rel in files and dest.read_bytes() != (source / rel).read_bytes()):
+                conflicts.append(str(dest))
+    if conflicts:
+        raise SystemExit("Conflicts; no files copied. Reconcile explicitly: " + ", ".join(sorted(set(conflicts))))
+    for rel in sorted(files):
+        dest = target / rel
+        if not dest.exists():
+            dest.parent.mkdir(parents=True, exist_ok=True)
+            shutil.copy2(source / rel, dest)
 
 
 def replace_yaml_scalar(text: str, key: str, value: str, indent: int) -> str:
@@ -32,15 +76,17 @@ def replace_yaml_scalar(text: str, key: str, value: str, indent: int) -> str:
 
 def main() -> None:
     parser = argparse.ArgumentParser()
-    parser.add_argument("--root", default=".")
+    parser.add_argument("destination", nargs="?")
+    parser.add_argument("--root")
     parser.add_argument("--project-name")
     args = parser.parse_args()
 
-    root = find_root(Path(args.root))
-    templates = root / ".softkit" / "templates"
-    missing = [name for name in REQUIRED_TEMPLATES if not (templates / name).is_file()]
-    if missing:
-        raise SystemExit("Incomplete SoftKit installation; missing templates: " + ", ".join(missing))
+    if args.destination is not None and args.root is not None:
+        parser.error("use destination or --root, not both")
+    source = Path(__file__).resolve().parents[2]
+    root = Path(args.destination or args.root or ".").expanduser().resolve()
+    install_package(source, root)
+    templates = root / ".softkit/templates"
 
     project_name = args.project_name or root.name
     today = datetime.now().date().isoformat()

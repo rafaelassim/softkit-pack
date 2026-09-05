@@ -42,11 +42,22 @@ Codex discovers repository skills under `.agents/skills`. Every skill is a direc
 
 ## Install in a new repository
 
-Copy the complete contents of this pack into the repository root, preserving hidden directories:
+Run the bootstrap from this pack, providing the exact destination directory:
 
 ```bash
-cp -a softkit-pack-codex/. /path/to/project/
+python3 .softkit/scripts/bootstrap_softkit.py /path/to/project --project-name "Project Name"
 ```
+
+The destination is created if missing. The script installs the eight skills,
+canonical tools, templates, protocol and AGENTS.md, then generates fresh project
+control files. It does not copy this pack's Git history, work items or premises.
+Existing project data is preserved. Identical installation files are reused;
+conflicting files (including custom AGENTS.md) are reported before any copying.
+Reconcile conflicts explicitly; this command is not a forced upgrade tool.
+
+`--root /path/to/project` remains supported instead of the positional destination.
+With neither option, the current directory is the exact destination. The source
+package is located relative to the script, so invocation from another cwd works.
 
 Create or edit the initial premises:
 

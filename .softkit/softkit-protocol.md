@@ -36,6 +36,8 @@ Template rules:
 - Preserve `schema_version` and `generated_from` in YAML-managed artifacts.
 - If the protocol or a required template is missing, stop and report an incomplete installation.
 
+Bootstrap installs the package from its script location into the exact destination (positional path or `--root`, default cwd). Validate source completeness and destination conflicts before copying; preserve existing project data and never copy the source project history. Installation conflicts require explicit reconciliation.
+
 When command execution is available, prefer the deterministic scripts in `.softkit/scripts/` for bootstrap, work-item allocation, source indexing, and structural validation.
 
 ## 2. Canonical Project Paths

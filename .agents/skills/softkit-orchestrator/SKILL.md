@@ -45,6 +45,7 @@ Use `create_work_item.py` only after the proposed workflow has the required user
 - `.softkit/templates/project-state.template.yaml`
 - `.softkit/templates/work-item.template.yaml`
 - `.softkit/templates/change-request.template.md`
+- `.softkit/templates/module-schema.toml`
 - `softkit-input/project-primitives.md`
 - `softkit-input/premises/**`
 - `softkit-input/changes/inbox/**`
@@ -54,19 +55,37 @@ Use `create_work_item.py` only after the proposed workflow has the required user
 
 # Workflow
 
-## 1. Bootstrap and Reconciliation
+## 1. Project Discovery
 
-1. Resolve and read all four canonical templates before creating managed project files.
-2. If `softkit-input/project-primitives.md` is missing, read `project-primitives.template.md`, populate a draft from user input and repository evidence, and ask the user to approve it before planning implementation.
-3. If `specs/00_Project_Control/project-state.yaml` is missing, read `project-state.template.yaml`, copy its complete structure, populate known project fields, preserve `schema_version` and `generated_from`, and create the active file.
-4. If project state exists, compare it with `project-state.template.yaml`; add missing structural keys conservatively without replacing confirmed values.
-5. Recursively scan `premises/` and classify sources by type, authority, scope, and status.
-6. Read project state and inspect the actual repository.
-7. Create or update `source-index.yaml` using stable paths and content hashes when tools permit.
-8. Identify new, modified, moved, missing, deprecated, or conflicting sources.
-9. If a required template cannot be resolved, stop bootstrap and report the packaging/configuration problem instead of inventing a schema.
+1. At the beginning of every interaction, check whether `module.toml` exists.
+2. If present, read it before inspecting the project state.
+3. Use `module.toml` as the authoritative project manifest for:
+   - project structure;
+   - registered modules;
+   - specification paths;
+   - module manifests;
+   - declared integrations.
+4. Read `specs/00_Project_Control/SoftKit-progress.md`
+   after loading the project manifest.
+5. If a registered module contains a `module.toml`, read it when
+   that module becomes the active context.
+6. Do not infer module structure when it is explicitly declared
+   in the manifests.
 
-## 2. Change Intake
+## 2. Bootstrap and Reconciliation
+
+1. Resolve and read all five canonical templates before creating managed project files.
+2. If `module.toml` is missing, read `module-schema.toml` and create a populated root manifest from repository evidence before loading project state.
+3. If `softkit-input/project-primitives.md` is missing, read `project-primitives.template.md`, populate a draft from user input and repository evidence, and ask the user to approve it before planning implementation.
+4. If `specs/00_Project_Control/project-state.yaml` is missing, read `project-state.template.yaml`, copy its complete structure, populate known project fields, preserve `schema_version` and `generated_from`, and create the active file.
+5. If project state exists, compare it with `project-state.template.yaml`; add missing structural keys conservatively without replacing confirmed values.
+6. Recursively scan `premises/` and classify sources by type, authority, scope, and status.
+7. Read project state and inspect the actual repository.
+8. Create or update `source-index.yaml` using stable paths and content hashes when tools permit.
+9. Identify new, modified, moved, missing, deprecated, or conflicting sources.
+10. If a required template cannot be resolved, stop bootstrap and report the packaging/configuration problem instead of inventing a schema.
+
+## 3. Change Intake
 
 1. Recursively scan `changes/inbox/`.
 2. Classify each new item as clarification, defect, functional enhancement, non-functional change, architectural change, operational change, or documentation-only change.
@@ -76,14 +95,14 @@ Use `create_work_item.py` only after the proposed workflow has the required user
 6. Create an impact analysis under `specs/00_Project_Control/change-impact/` for every substantial change.
 7. Do not move a change to `accepted/` without user approval or an existing project rule that explicitly permits it.
 
-## 3. Work Selection
+## 4. Work Selection
 
 1. Resume an approved, non-blocked active work item when one exists.
 2. Otherwise recommend the next work item using priority, dependency, risk, and completion value.
 3. Prefer finishing near-complete work before opening unnecessary parallel implementation.
 4. Allow different work items to be in different lifecycle stages.
 
-## 4. Workflow Proposal
+## 5. Workflow Proposal
 
 For the selected work item, propose only the stages that add value:
 
@@ -117,7 +136,7 @@ For substantial or long work, present the proposal and wait for user approval, a
 
 For a small, low-risk task explicitly requested for immediate execution, present a concise workflow and proceed only when the user's request already constitutes clear approval and the action stays within established project boundaries.
 
-## 5. Coordination
+## 6. Coordination
 
 1. Persist the approved workflow under `specs/00_Project_Control/workflows/`.
 2. Before creating a work item, read `work-item.template.yaml`; copy its complete structure to `specs/00_Project_Control/work-items/WI-XXX.yaml`, allocate the next stable ID, populate approved values, and preserve `schema_version` and `generated_from`.
@@ -128,7 +147,7 @@ For a small, low-risk task explicitly requested for immediate execution, present
 7. Replan only when evidence, blockers, or scope changes require it.
 8. Ask again only when a mandatory stop condition is reached or the approved workflow materially changes.
 
-## 6. Completion
+## 7. Completion
 
 A work item is complete only when:
 

@@ -12,6 +12,7 @@ REQUIRED_TEMPLATES = (
     "project-state.template.yaml",
     "work-item.template.yaml",
     "change-request.template.md",
+    "module-schema.toml",
 )
 
 
@@ -44,6 +45,64 @@ def main() -> None:
     project_name = args.project_name or root.name
     today = datetime.now().date().isoformat()
     now = datetime.now(timezone.utc).astimezone().isoformat(timespec="seconds")
+
+    manifest = root / "module.toml"
+    if not manifest.exists():
+        module_name = re.sub(r"[^a-z0-9]+", "_", project_name.lower()).strip("_")
+        text = f'''schema_version = 1
+
+[manifest]
+kind = "softkit-modules"
+
+[defaults]
+language = ""
+runtime = ""
+tests_root = "tests"
+
+[[modules]]
+id = "MOD001"
+name = "{module_name}"
+description = "Root project module."
+kind = "library"
+path = "."
+package = ""
+entry_point = ""
+lifecycle = "active"
+
+[modules.responsibility]
+summary = "Root project module."
+provides = []
+excludes = []
+
+[modules.paths]
+source = "src"
+tests = "tests"
+examples = "examples"
+resources = ""
+generated = ""
+
+[modules.specifications]
+requirements = "specs/02_Requirements"
+architecture = "specs/03_Architecture"
+implementation = "specs/04_Implementation"
+validation = "specs/05_Validation"
+operations = "specs/06_Operations"
+
+[modules.runtime]
+language = ""
+version = ""
+framework = ""
+package_manifest = ""
+
+[modules.ownership]
+architecture = "softkit-architect"
+implementation = "softkit-coder"
+validation = "softkit-qa"
+review = "softkit-reviewer"
+operations = "softkit-devops"
+'''
+        manifest.write_text(text)
+        print(f"created: {manifest.relative_to(root)}")
 
     for rel in (
         "softkit-input/premises/pseudocode",

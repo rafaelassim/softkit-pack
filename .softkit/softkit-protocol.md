@@ -19,7 +19,8 @@ All paths in this protocol are relative to the repository root.
     ├── project-primitives.template.md
     ├── project-state.template.yaml
     ├── work-item.template.yaml
-    └── change-request.template.md
+    ├── change-request.template.md
+    └── module-schema.toml
 ```
 
 Every SoftKit skill must read `.softkit/softkit-protocol.md`. The orchestrator must read the applicable canonical template before creating or repairing a managed artifact.
@@ -30,6 +31,7 @@ Template rules:
 - Before creating `specs/00_Project_Control/work-items/WI-XXX.yaml`, read `.softkit/templates/work-item.template.yaml`, copy its complete structure, allocate the next stable ID, and populate approved data.
 - If `softkit-input/project-primitives.md` is missing, read `.softkit/templates/project-primitives.template.md` and create or propose a draft. It remains `draft` until the user approves it.
 - When normalizing an inbox change, read `.softkit/templates/change-request.template.md`; preserve the original and create a structured derivative.
+- When `module.toml` is missing, read `.softkit/templates/module-schema.toml`, create the root manifest from repository evidence, and remove example-only entries that do not describe the project.
 - When a managed artifact exists, add missing structural keys conservatively; never replace confirmed values or silently migrate semantics.
 - Preserve `schema_version` and `generated_from` in YAML-managed artifacts.
 - If the protocol or a required template is missing, stop and report an incomplete installation.

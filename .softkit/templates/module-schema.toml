@@ -1,0 +1,708 @@
+# ============================================================
+# SoftKit Modules Manifest
+# Generic schema for project modules
+# ============================================================
+
+schema_version = 1
+
+
+# ============================================================
+# MANIFEST
+# Metadata about this manifest itself
+# ============================================================
+
+[manifest]
+
+kind = "softkit-modules"
+
+# Optional reference to the root project manifest
+project_manifest = "module.toml"
+
+
+# ============================================================
+# DEFAULTS
+# Optional values inherited by modules when not explicitly set
+# ============================================================
+
+[defaults]
+
+# Examples:
+# python
+# cpp
+# c
+# rust
+# java
+# javascript
+# typescript
+# go
+# dotnet
+language = ""
+
+# Runtime or compiler requirement
+runtime = ""
+
+# Default tests location
+tests_root = "tests"
+
+
+# ============================================================
+# MODULE
+# Repeat [[modules]] for each module in the project
+# ============================================================
+
+[[modules]]
+
+
+# ------------------------------------------------------------
+# Identity
+# ------------------------------------------------------------
+
+# Unique and stable identifier
+id = "MOD001"
+
+# Machine-readable module name
+name = "module_name"
+
+# Human-readable description
+description = """
+Short description of the module purpose.
+"""
+
+# Module category
+#
+# Suggested values:
+# library
+# service
+# application
+# adapter
+# gateway
+# worker
+# cli
+# plugin
+# driver
+# component
+# subsystem
+kind = "library"
+
+# Module root path
+path = "src/module_name"
+
+# Optional package, namespace or logical package name
+package = ""
+
+# Optional executable/import entry point
+entry_point = ""
+
+# Lifecycle:
+# experimental
+# active
+# deprecated
+lifecycle = "active"
+
+
+# ============================================================
+# RESPONSIBILITY
+# Architectural boundaries of the module
+# ============================================================
+
+[modules.responsibility]
+
+# One-sentence module responsibility
+summary = """
+Describe the primary responsibility of this module.
+"""
+
+# Capabilities that belong to this module
+provides = [
+]
+
+# Responsibilities explicitly outside this module
+excludes = [
+]
+
+
+# ============================================================
+# PATHS
+# Module-specific project locations
+# ============================================================
+
+[modules.paths]
+
+source = "src/module_name"
+
+tests = "tests/module_name"
+
+# Optional
+examples = ""
+
+# Optional module-local resources/assets
+resources = ""
+
+# Optional generated artifacts
+generated = ""
+
+
+# ============================================================
+# SPECIFICATIONS
+# References to SoftKit specifications
+# ============================================================
+
+[modules.specifications]
+
+requirements = ""
+
+architecture = ""
+
+implementation = ""
+
+validation = ""
+
+operations = ""
+
+
+# ============================================================
+# RUNTIME
+# Technology/runtime information
+# ============================================================
+
+[modules.runtime]
+
+# Programming language
+language = ""
+
+# Version constraint
+version = ""
+
+# Optional runtime/framework
+framework = ""
+
+# Optional reference to the ecosystem package/build manifest
+#
+# Examples:
+# pyproject.toml
+# package.json
+# Cargo.toml
+# pom.xml
+# build.gradle
+# CMakeLists.txt
+package_manifest = ""
+
+
+# ============================================================
+# OWNERSHIP
+# SoftKit roles responsible for different concerns
+# ============================================================
+
+[modules.ownership]
+
+architecture = "softkit-architect"
+
+implementation = "softkit-coder"
+
+validation = "softkit-qa"
+
+review = "softkit-reviewer"
+
+operations = "softkit-devops"
+
+
+# ============================================================
+# INTERNAL DEPENDENCIES
+#
+# Dependencies on other modules inside the same project
+# ============================================================
+
+[[modules.dependencies.internal]]
+
+# Target module name
+module = "another_module"
+
+# Relationship:
+#
+# uses
+# imports
+# calls
+# publishes-to
+# subscribes-to
+# reads-from
+# writes-to
+relationship = "uses"
+
+# Whether this dependency is required
+required = true
+
+# Optional description
+description = ""
+
+
+# ============================================================
+# EXTERNAL DEPENDENCIES
+#
+# Libraries/platforms/services used by this module but not
+# considered full integration contracts.
+# ============================================================
+
+[[modules.dependencies.external]]
+
+name = "external_dependency"
+
+# Examples:
+# library
+# runtime
+# sdk
+# framework
+# platform
+kind = "library"
+
+required = true
+
+# Optional reference to package/build manifest
+reference = ""
+
+
+# ============================================================
+# PROVIDED INTERFACES
+#
+# Public interfaces exposed by the module
+# ============================================================
+
+[[modules.interfaces.provides]]
+
+id = "IF001"
+
+name = "interface_name"
+
+# Suggested values:
+#
+# language-api
+# rest-api
+# graphql-api
+# grpc-api
+# cli
+# event
+# message-queue
+# database
+# file
+# socket
+# shared-memory
+# hardware
+kind = "language-api"
+
+# Implementation location
+location = ""
+
+# public
+# internal
+# private
+visibility = "public"
+
+# experimental
+# stable
+# deprecated
+stability = "stable"
+
+# Optional external contract/schema
+contract = ""
+
+# Optional description
+description = ""
+
+
+# ============================================================
+# CONSUMED INTERFACES
+#
+# Interfaces provided by another internal module
+# ============================================================
+
+[[modules.interfaces.consumes]]
+
+id = "IF002"
+
+name = "interface_name"
+
+kind = "language-api"
+
+# Module providing the interface
+module = "another_module"
+
+required = true
+
+# Optional contract/schema reference
+contract = ""
+
+description = ""
+
+
+# ============================================================
+# EXTERNAL INTEGRATIONS
+#
+# Connections that cross the project/system boundary
+# ============================================================
+
+[[modules.integrations]]
+
+id = "INT001"
+
+name = "integration_name"
+
+# Suggested values:
+#
+# rest-api
+# graphql-api
+# grpc-api
+# database
+# message-broker
+# filesystem
+# socket
+# serial
+# fieldbus
+# cloud-service
+# external-process
+# hardware
+# custom
+kind = "custom"
+
+# inbound
+# outbound
+# bidirectional
+direction = "outbound"
+
+# Examples:
+# https
+# http
+# grpc
+# mqtt
+# amqp
+# tcp
+# udp
+# serial
+# can
+# modbus
+protocol = ""
+
+required = true
+
+# Documentation or source of truth for integration
+reference = ""
+
+
+# ------------------------------------------------------------
+# Integration endpoint
+# ------------------------------------------------------------
+
+[modules.integrations.endpoint]
+
+# Static address, when appropriate
+address = ""
+
+# Preferred when configurable externally
+address_env = ""
+
+# Optional port
+port = 0
+
+# Optional environment variable containing the port
+port_env = ""
+
+
+# ------------------------------------------------------------
+# Integration authentication
+# ------------------------------------------------------------
+
+[modules.integrations.authentication]
+
+# Suggested values:
+#
+# none
+# bearer-token
+# api-key
+# basic
+# oauth2
+# certificate
+# credentials
+# custom
+type = "none"
+
+# Environment variable containing authentication information
+credential_env = ""
+
+# Optional reference to additional configuration
+reference = ""
+
+
+# ------------------------------------------------------------
+# Transport
+# ------------------------------------------------------------
+
+[modules.integrations.transport]
+
+# Examples:
+# json
+# xml
+# protobuf
+# binary
+# text
+format = ""
+
+encoding = ""
+
+timeout_seconds = 0
+
+
+# ------------------------------------------------------------
+# Retry policy
+# ------------------------------------------------------------
+
+[modules.integrations.retry]
+
+enabled = false
+
+max_attempts = 0
+
+# none
+# fixed
+# linear
+# exponential
+backoff = "none"
+
+# Optional base delay
+delay_seconds = 0
+
+
+# ------------------------------------------------------------
+# Integration error policy
+# ------------------------------------------------------------
+
+[modules.integrations.errors]
+
+# Values should normally be:
+#
+# recoverable
+# fatal
+# ignored
+# retry
+#
+# Add only errors relevant to the integration.
+
+connection_error = "recoverable"
+
+timeout = "recoverable"
+
+authentication_error = "fatal"
+
+invalid_response = "fatal"
+
+
+# ============================================================
+# CONFIGURATION CONTRACT
+# ============================================================
+
+[[modules.configuration]]
+
+name = "CONFIGURATION_NAME"
+
+# Suggested values:
+#
+# string
+# integer
+# float
+# boolean
+# path
+# url
+# enum
+# list
+# object
+type = "string"
+
+required = false
+
+# true indicates sensitive information
+secret = false
+
+# Optional default
+# Remove when not applicable.
+default = ""
+
+description = ""
+
+
+# ============================================================
+# EVENTS
+#
+# Optional asynchronous events produced or consumed
+# ============================================================
+
+[[modules.events.publishes]]
+
+name = "event_name"
+
+# Optional schema/contract
+contract = ""
+
+# Optional broker/topic/channel
+channel = ""
+
+description = ""
+
+
+[[modules.events.subscribes]]
+
+name = "event_name"
+
+contract = ""
+
+channel = ""
+
+description = ""
+
+
+# ============================================================
+# DATA
+#
+# Optional persistent data owned or accessed by this module
+# ============================================================
+
+[[modules.data]]
+
+name = "data_resource"
+
+# Suggested values:
+#
+# database
+# table
+# collection
+# file
+# cache
+# object-store
+# shared-memory
+kind = "database"
+
+# owner
+# reader
+# writer
+# read-write
+access = "owner"
+
+reference = ""
+
+description = ""
+
+
+# ============================================================
+# COMMANDS
+#
+# Standard commands agents may use
+# ============================================================
+
+[modules.commands]
+
+install = ""
+
+build = ""
+
+run = ""
+
+test = ""
+
+lint = ""
+
+format = ""
+
+typecheck = ""
+
+
+# ============================================================
+# QUALITY
+# ============================================================
+
+[modules.quality]
+
+test_framework = ""
+
+static_analysis = ""
+
+type_checker = ""
+
+# Percentage from 0 to 100.
+# Set to 0 when no minimum is defined.
+minimum_test_coverage = 0
+
+
+# ============================================================
+# OBSERVABILITY
+# Optional operational characteristics
+# ============================================================
+
+[modules.observability]
+
+logging = false
+
+metrics = false
+
+tracing = false
+
+# Optional health check mechanism or endpoint
+health_check = ""
+
+
+# ============================================================
+# SECURITY
+# High-level security characteristics
+# ============================================================
+
+[modules.security]
+
+# Whether module handles secrets
+handles_secrets = false
+
+# Whether module processes sensitive information
+handles_sensitive_data = false
+
+# Optional security specification/reference
+reference = ""
+
+
+# ============================================================
+# TRACEABILITY
+#
+# References only.
+# Detailed traceability remains in specification artifacts.
+# ============================================================
+
+[modules.traceability]
+
+requirements = [
+]
+
+use_cases = [
+]
+
+adrs = [
+]
+
+test_plans = [
+]
+
+
+# ============================================================
+# REFERENCES
+#
+# Additional documentation relevant to the module.
+# ============================================================
+
+[[modules.references]]
+
+name = "reference_name"
+
+# Examples:
+# documentation
+# specification
+# manual
+# standard
+# protocol
+# external
+kind = "documentation"
+
+path = ""
+
+description = ""

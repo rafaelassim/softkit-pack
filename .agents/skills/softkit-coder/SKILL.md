@@ -36,6 +36,33 @@ Read and follow `.softkit/softkit-protocol.md`, including the mandatory prefligh
 11. Correct failures caused by the change; record unrelated pre-existing failures separately.
 12. Update implementation notes and traceability with actual files and evidence.
 
+## Project and Module Context
+
+Before implementing code:
+
+1. Read `module.toml` if it exists.
+2. Identify the module associated with the requested implementation.
+3. Read the module's `module.toml`, when declared.
+4. Use the manifests to discover:
+   - runtime and language;
+   - entry points;
+   - dependencies;
+   - provided interfaces;
+   - consumed interfaces;
+   - events;
+   - configuration variables;
+   - health endpoints;
+   - related specification paths.
+5. Then read:
+   - project philosophy;
+   - functional requirements;
+   - use cases;
+   - architecture specifications;
+   - applicable ADRs.
+6. Implementation must conform to both:
+   - behavioral specifications;
+   - declared integration contracts.
+
 # Outputs
 
 - source and configuration changes required by the work item;

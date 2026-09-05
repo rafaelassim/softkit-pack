@@ -13,7 +13,7 @@ SKILLS = (
 )
 TEMPLATES = (
     "project-primitives.template.md", "project-state.template.yaml",
-    "work-item.template.yaml", "change-request.template.md",
+    "work-item.template.yaml", "change-request.template.md", "module-schema.toml",
 )
 
 
@@ -24,7 +24,11 @@ def main() -> None:
     root = Path(args.root).resolve()
     errors: list[str] = []
 
-    required = [root / "AGENTS.md", root / ".softkit" / "softkit-protocol.md"]
+    required = [
+        root / "AGENTS.md",
+        root / "module.toml",
+        root / ".softkit" / "softkit-protocol.md",
+    ]
     required += [root / ".softkit" / "templates" / x for x in TEMPLATES]
     for name in SKILLS:
         required += [
